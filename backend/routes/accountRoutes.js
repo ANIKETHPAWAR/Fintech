@@ -1,20 +1,25 @@
 const express = require("express");
 const app = express();
-const Account = require("../models/Account");
+const{Account}  = require("../models/User");
 const router = express.Router();
 const {jwtAuthMiddleware,generateToken} = require('./../auth')
 
 
-router.get("/balance", jwtAuthMiddleware, async (req, res) => {
-    const account = await Account.findOne({
-        userId: req.userId
-    });
+router.get('/balance', jwtAuthMiddleware, async (req, res) => {
+  try {
+    const account = await Account.findOne({ userId: req.user.id });
+    if (!account) {
+      return res.status(404).json({ error: 'Account not found' });
+    }
 
     res.json({
-        balance: account.balance
-    })
+      balance: account.balance
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
-
 router.post("/transfer", jwtAuthMiddleware, async (req, res) => {
     const session = await mongoose.startSession();
 

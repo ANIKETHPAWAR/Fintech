@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const router = express.Router();
-const User = require("../models/User");
+const { User, Account } = require("../models/User"); // Destructure User and Account
 const {jwtAuthMiddleware,generateToken} = require('./../auth')
 
 /// signup token
@@ -14,9 +14,13 @@ router.post('/signup',async (req,res)=>{
 
     // generating new token
 const payLoad ={
-  id: savedUser.username,
+  id: savedUser._id,
  
 }
+await Account.create({
+      userId: savedUser._id,
+      balance: 1 + Math.random() * 10000
+    });
 const token = generateToken(payLoad);
 console.log('your token is :' ,token);
     res.status(200).json({savedUser,token : token})
@@ -41,7 +45,7 @@ return response.status(401).json({error: 'user didnt match'})
 }
 
 const payLoad = {
-  id :user.username,
+  id :user._id,
   
 
 }
