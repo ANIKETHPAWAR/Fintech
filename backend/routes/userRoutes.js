@@ -49,6 +49,10 @@ const payLoad = {
 const token = generateToken(payLoad);
 res.json({token})
 
+ await Account.create({
+        id,
+        balance: 1 + Math.random() * 10000
+    })
 
 }
 catch(err){
