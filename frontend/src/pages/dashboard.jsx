@@ -1,9 +1,13 @@
 import { Appbar } from "../components/AppBar";
 import { Balance } from "../components/Balance";
 export const Dashboard =()=>{
-    // return <div className="bg-slate-200 w-full">
-       return <div> <Appbar /></div>
+    
+       return <div>
+         <Appbar />
+         <div className="m-8">
+            <Balance value={"10000"}/>
+           
+         </div>
+         </div>
                
 }
-//     </div>
-// }}
