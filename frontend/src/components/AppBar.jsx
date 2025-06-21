@@ -20,7 +20,7 @@ useEffect(() => {
 }, []);
 
     return <div className= "shadow h-14 flex justify-between bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 fixed top-0 left-0 right-0 w-full " >
-        <div className="flex flex-col justify-center h-full ml-1 text-xl text-white font-bold ">ZapPay </div>
+        <div className="flex flex-col justify-center h-full ml-1 text-xl text-white font-bold px-3 ">ZapPay </div>
         <div className="flex">
             <div className="flex flex-col justify-center h-full mr-4 text-white text-md">Welcome {user.firstName}</div>
        

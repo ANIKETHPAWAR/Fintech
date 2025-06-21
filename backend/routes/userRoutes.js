@@ -46,7 +46,10 @@ const user = await User.findOne({username:username});
 
 if(!user || !(await user.comparePassword(password))){
 return res.status(401).json({error: 'user didnt match'})
+console.log('user not found');
 }
+console.log('Authenticating user:', username);
+
 
 const payLoad = {
   id :user._id,
@@ -57,11 +60,7 @@ const payLoad = {
 const token = generateToken(payLoad);
 res.json({token})
 
- await Account.create({
-        userId:user._id,
-        balance: 1 + Math.random() * 10000
-    })
-
+ console.log('Token sent for user:', username);
 }
 catch(err){
 console.error(err);
@@ -115,6 +114,7 @@ router.get("/me",jwtAuthMiddleware, async(req,res)=>{
       firstName: user.firstName,
       lastName: user.lastName,
       balance: account.balance,
+      id:userId
     });
   }catch(err){
 res.status(500).json({ error: "Something went wrong" });

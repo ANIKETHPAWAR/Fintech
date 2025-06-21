@@ -7,11 +7,34 @@ export const Users =()=>{
     const navigate=useNavigate();
     const [users,setUsers]=useState([]);
     const[filter,setFilter]=useState("");
+    const[currentUserId,setCurrentUserId]=useState(null);
+   
+    useEffect(()=>{
+        const fetchme=async()=>{
+            try{
+                const res = await axios.get("http://localhost:3000/api/v1/user/me",{
+                     headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+                }); setCurrentUserId(res.data.id)
+            } catch(err){
+                 console.error("Failed to fetch /me:", err);
+            }
+        };
+        fetchme();
+    },[]);
+
+
+
     useEffect(()=>{
         axios.get("http://localhost:3000/api/v1/user/bulk?filter="+filter).then(response=>{
-            setUsers(response.data.user);
+   const filteredUsers = response.data.user.filter(
+          (user) => user._id !== currentUserId
+        );
+        setUsers(filteredUsers);
+            
         })
-    },[filter])
+    },[filter,currentUserId])
 
     return <>
         <div className="font-bold mt-6 text-lg">
