@@ -4,6 +4,10 @@ const router = express.Router();
 const { User, Account } = require("../models/User"); // Destructure User and Account
 const {jwtAuthMiddleware,generateToken} = require('./../auth')
 
+//test
+router.get('/test', (req, res) => {
+  res.send('Test route works');
+});
 /// signup token
 router.post('/signup',async (req,res)=>{
     try{
@@ -32,7 +36,7 @@ console.log('your token is :' ,token);
      })
 /// login routes token 
 
-router.post('/signin',jwtAuthMiddleware,async (req,res)=>{
+router.post('/signin',async (req,res)=>{
 
 
 try{
@@ -41,7 +45,7 @@ const {username,password} = req.body;
 const user = await User.findOne({username:username});
 
 if(!user || !(await user.comparePassword(password))){
-return response.status(401).json({error: 'user didnt match'})
+return res.status(401).json({error: 'user didnt match'})
 }
 
 const payLoad = {
@@ -54,7 +58,7 @@ const token = generateToken(payLoad);
 res.json({token})
 
  await Account.create({
-        id,
+        userId:user._id,
         balance: 1 + Math.random() * 10000
     })
 
@@ -94,6 +98,26 @@ if(!Response){
     console.log(err);
     res.status(500).json({error:'internal error'})
 
+  }
+})
+router.get("/me",jwtAuthMiddleware, async(req,res)=>{
+  try{
+    console.log("Inside /me route", req.user);
+
+    const userId=req.user.id;
+ const user=await User.findById(userId);
+ const account = await Account.findOne({userId:userId});
+  if (!user || !account) {
+      return res.status(404).json({ error: "User or account not found" });
+    }
+
+    res.json({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      balance: account.balance,
+    });
+  }catch(err){
+res.status(500).json({ error: "Something went wrong" });
   }
 })
 

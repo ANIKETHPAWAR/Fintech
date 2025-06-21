@@ -18,6 +18,7 @@ if(!authorization){
 const decodedValue = jwt.verify(token,process.env.JWT_SECRET);
 
 req.user = decodedValue
+req.userid=decodedValue.id;
 next();
 
 

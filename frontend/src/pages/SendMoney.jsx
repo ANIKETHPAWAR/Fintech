@@ -1,58 +1,71 @@
 import { useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import { ArrowLeft } from "lucide-react";
+
 export const SendMoney = () => {
-const [amount,setAmount]=useState(0);
-    const [searchParams]=useSearchParams();
-    const id =searchParams.get('id');
-    const name = searchParams.get('name');
-    return <div className="flex justify-center h-screen bg-gray-100">
-        <div className="h-full flex flex-col justify-center">
-            <div
-                className="border h-min text-card-foreground max-w-md p-4 space-y-8 w-96 bg-white shadow-lg rounded-lg"
-            >
-                <div className="flex flex-col space-y-1.5 p-6">
-                <h2 className="text-3xl font-bold text-center">Send Money</h2>
-                </div>
-                <div className="p-6">
-                <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center">
-                    <span className="text-2xl text-white">{name[0].toUpperCase()}</span>
-                    </div>
-                    <h3 className="text-2xl font-semibold">{name}</h3>
-                </div>
-                <div className="space-y-4">
-                    <div className="space-y-2">
-                    <label
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        htmlFor="amount"
-                    >
-                        Amount (in Rs)
-                    </label>
-                    <input onChange={(e)=>{
-                        setAmount(e.target.value)
-                    }}
-                        type="number"
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                        id="amount"
-                        placeholder="Enter amount"
-                    />
-                    </div>
-                    <button onClick={()=>{
-                        axios.post("http://localhost:3000/api/v1/account/transfer",{
-                            to:id,
-                            amount
-                        },{
-                            headers:{
-                                Authorization:`Bearer ${localStorage.getItem('token')}`
-                            }
-                        })
-                    }} className="justify-center rounded-md text-sm font-medium ring-offset-background transition-colors h-10 px-4 py-2 w-full bg-green-500 text-white">
-                        Initiate Transfer
-                    </button>
-                </div>
-                </div>
+  const [amount, setAmount] = useState(0);
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
+  const name = searchParams.get("name");
+  const initial = name ? name[0].toUpperCase() : "?";
+
+  const send = async () => {
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/api/v1/account/transfer",
+        {
+          
+          amount,
+          to: id
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      alert("Transfer Successful");
+    } catch (e) {
+      alert("Transfer Failed");
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+      <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 w-full max-w-md border border-white border-opacity-20 shadow-2xl">
+        <div className="text-white text-xl font-semibold mb-6 flex items-center space-x-3">
+          <ArrowLeft className="w-5 h-5" />
+          <span>Send Money</span>
         </div>
+
+        <div className="flex items-center space-x-4 mb-6">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+            <span className="text-2xl text-white font-semibold">{initial}</span>
+          </div>
+          <h3 className="text-2xl font-semibold text-black">{name}</h3>
+        </div>
+
+        <div className="mb-6">
+          <label htmlFor="amount" className="block text-sm font-medium text-black mb-2">
+            Amount (in ₹)
+          </label>
+          <input
+            type="number"
+            id="amount"
+            placeholder="Enter amount"
+            onChange={(e) => setAmount(e.target.value)}
+            className="w-full px-4 py-3 bg-white bg-opacity-10 border border-black border-opacity-20 rounded-lg text-black placeholder-black placeholder-opacity-50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          />
+        </div>
+
+        <button
+          onClick={send}
+          className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition duration-200 transform hover:scale-105 shadow-lg"
+        >
+          Initiate Transfer
+        </button>
       </div>
     </div>
-}
+  );
+};

@@ -20,7 +20,7 @@ export const Users =()=>{
         <div className="my-2">
             <input onChange={(e)=>{
                 setFilter(e.target.value)
-            }} type="text" placeholder="Search users..." className="w-3xl px-2 py-1 border rounded border-slate-200"></input>
+            }} type="text" placeholder="Search users..." className="w-xl px-2 py-1 border rounded border-slate-200"></input>
         </div>
         <div>
             {users.map(user => <User user={user} />)}
